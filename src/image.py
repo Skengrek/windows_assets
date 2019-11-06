@@ -12,14 +12,17 @@ from PIL import Image
 def get_assets(dst_dir='TEMP'):
     """Get windows assets and copy them to a specific folder"""
     path_assets = path.expandvars(r'%LOCALAPPDATA%\Packages\Microsoft.Windows.ContentDeliveryManager_cw5n1h2txyewy\LocalState\Assets')
+
+    # ? get all files from the assets folder
     tmp_assets = [f
                   for f in listdir(path_assets)
                   if isfile(join(path_assets, f))
                  ]
+
     new_assets = []
 
+    # ? check which assets have already been colected
     log_file = dst_dir + sep + 'log.txt'
-
     old_list = []
     if isfile(log_file):
         old_list = get_collected_assets(log_file)
@@ -68,6 +71,7 @@ def fill_log_file(file_name, new_assets):
         tmp_str = str(asset)
         f.write(tmp_str)
 
+        # ? change line
         f.write('\n')
 
 
@@ -99,24 +103,27 @@ def sort_assets(path_dir='TEMP'):
         mkdir(join(path_dir, 'others'))
 
     for file in listdir(path_dir):
-        tmp_str = file.split('.')
+        # ? list all assets in the directory
         path_im = join(path_dir, file)
-        if tmp_str[-1] == 'png':
-            im = Image.open(path_im)
-            width, height = im.size
-            im.close()
-            if width == 1920:
-                dst = path_dir + sep + 'wallpaper' + sep + file
-                move(path_im, join(path_im, dst))
-            elif width == 1080:
-                dst = path_dir + sep + 'wallpaper_vert' + sep + file
-                move(path_im, join(path_im, dst))
-            elif width == 300:
-                dst = path_dir + sep + 'logo' + sep + file
-                move(path_im, join(path_im, dst))
-            else:
-                dst = path_dir + sep + 'others' + sep + file
-                move(path_im, join(path_im, dst))
+
+        # ? get the image size
+        im = Image.open(path_im)
+        width, height = im.size
+        im.close()
+
+        # ? Sort all image by size
+        if width == 1920:
+            dst = path_dir + sep + 'wallpaper' + sep + file
+            move(path_im, join(path_im, dst))
+        elif width == 1080:
+            dst = path_dir + sep + 'wallpaper_vert' + sep + file
+            move(path_im, join(path_im, dst))
+        elif width == 300:
+            dst = path_dir + sep + 'logo' + sep + file
+            move(path_im, join(path_im, dst))
+        else:
+            dst = path_dir + sep + 'others' + sep + file
+            move(path_im, join(path_im, dst))
 
 
 

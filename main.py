@@ -4,7 +4,7 @@ from src.image import get_assets
 
 
 def main():
-    destination_folder = r'C:\Users\ke9unp\Desktop\ASSETS'
+    destination_folder = r'C:\Users\arman\Desktop\Assets'
     if not isdir(destination_folder):
         print('The directory you gave is not a valid one.')
         return None

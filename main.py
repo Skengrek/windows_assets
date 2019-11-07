@@ -1,15 +1,22 @@
-from os.path import isdir
+"""
+    This project will collects windows assets and sort them into a specific
+    directory.
+
+    The default directory will be Desktop/Assets.
+"""
+
+from os import mkdir
+from os.path import isdir, expandvars
 
 from src.image import get_assets
 
 
-def main():
-    destination_folder = r'C:\Users\arman\Desktop\Assets'
-    if not isdir(destination_folder):
-        print('The directory you gave is not a valid one.')
-        return None
+def main(path=r'%userprofile%\Desktop\Assets'):
+    dst_dir = expandvars(path)
+    if not isdir(dst_dir):
+        mkdir(dst_dir)
 
-    new_assets = get_assets(destination_folder)
+    new_assets = get_assets(dst_dir)
 
 
 if __name__ == "__main__":

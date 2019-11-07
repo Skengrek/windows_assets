@@ -9,7 +9,7 @@ from shutil import copy2, move
 from PIL import Image
 
 
-def get_assets(dst_dir='TEMP'):
+def get_assets(dst_dir):
     """Get windows assets and copy them to a specific folder"""
     path_assets = path.expandvars(r'%LOCALAPPDATA%\Packages\Microsoft.Windows.ContentDeliveryManager_cw5n1h2txyewy\LocalState\Assets')
 
@@ -21,12 +21,15 @@ def get_assets(dst_dir='TEMP'):
 
     new_assets = []
 
-    # ? check which assets have already been colected
+    # ? check which assets have already been collected
     log_file = dst_dir + sep + 'log.txt'
     old_list = []
+
     if isfile(log_file):
         old_list = get_collected_assets(log_file)
+
     else:
+        # ? create the file
         f = open(log_file, "w+")
         f.close()
 
@@ -102,7 +105,13 @@ def sort_assets(path_dir='TEMP'):
         # ? Create the others directory of it does not exist
         mkdir(join(path_dir, 'others'))
 
-    for file in listdir(path_dir):
+    # ? get all png file
+    tmp_assets = [f
+                  for f in listdir(path_dir)
+                  if f.split('.')[-1] == 'png'
+                  ]
+
+    for file in tmp_assets:
         # ? list all assets in the directory
         path_im = join(path_dir, file)
 
@@ -111,16 +120,19 @@ def sort_assets(path_dir='TEMP'):
         width, height = im.size
         im.close()
 
-        # ? Sort all image by size
+        # ? Sort all image by their size
         if width == 1920:
             dst = path_dir + sep + 'wallpaper' + sep + file
             move(path_im, join(path_im, dst))
+
         elif width == 1080:
             dst = path_dir + sep + 'wallpaper_vert' + sep + file
             move(path_im, join(path_im, dst))
-        elif width == 300:
+
+        elif width == height:
             dst = path_dir + sep + 'logo' + sep + file
             move(path_im, join(path_im, dst))
+
         else:
             dst = path_dir + sep + 'others' + sep + file
             move(path_im, join(path_im, dst))

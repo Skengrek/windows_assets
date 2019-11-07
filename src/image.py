@@ -43,8 +43,8 @@ def get_assets(dst_dir):
                 # ? assets has not been collected yet
                 copy2(src, dst)
 
-    fill_log_file(log_file, new_assets)
-    sort_assets(dst_dir)
+    moved_assets = sort_assets(dst_dir)
+    fill_log_file(log_file, moved_assets)
     return new_assets
 
 
@@ -61,7 +61,7 @@ def get_collected_assets(file_name):
     return old_assets
 
 
-def fill_log_file(file_name, new_assets):
+def fill_log_file(file_name, list_assets):
     """
         Fill the log file with assets collected
     :param file_name: the name of the log file
@@ -70,8 +70,8 @@ def fill_log_file(file_name, new_assets):
     """
     f = open(file_name, "a")
 
-    for asset in new_assets:
-        tmp_str = str(asset)
+    for asset in list_assets:
+        tmp_str = str(asset[-1] + ':' + asset[0])
         f.write(tmp_str)
 
         # ? change line
@@ -111,6 +111,7 @@ def sort_assets(path_dir='TEMP'):
                   if f.split('.')[-1] == 'png'
                   ]
 
+    moved_assets = []
     for file in tmp_assets:
         # ? list all assets in the directory
         path_im = join(path_dir, file)
@@ -120,22 +121,29 @@ def sort_assets(path_dir='TEMP'):
         width, height = im.size
         im.close()
 
+
         # ? Sort all image by their size
         if width == 1920:
             dst = path_dir + sep + 'wallpaper' + sep + file
             move(path_im, join(path_im, dst))
+            moved_assets.append([file, 'wallpaper'])
 
         elif width == 1080:
             dst = path_dir + sep + 'wallpaper_vert' + sep + file
             move(path_im, join(path_im, dst))
+            moved_assets.append([file, 'wallpaper_vert'])
 
         elif width == height:
             dst = path_dir + sep + 'logo' + sep + file
             move(path_im, join(path_im, dst))
+            moved_assets.append([file, 'logo'])
 
         else:
             dst = path_dir + sep + 'others' + sep + file
             move(path_im, join(path_im, dst))
+            moved_assets.append([file, 'others'])
+
+    return moved_assets
 
 
 

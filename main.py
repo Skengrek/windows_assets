@@ -8,7 +8,7 @@
 from os import mkdir
 from os.path import isdir, expandvars
 
-from src.image import get_assets
+from src.image import get_assets, sort_assets
 
 
 def main(path=r'%userprofile%\Desktop\Assets'):
@@ -17,7 +17,6 @@ def main(path=r'%userprofile%\Desktop\Assets'):
         mkdir(dst_dir)
 
     new_assets = get_assets(dst_dir)
-
 
 if __name__ == "__main__":
     main()

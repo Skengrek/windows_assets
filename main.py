@@ -18,6 +18,10 @@ def main(path=r'%userprofile%\Desktop\Assets'):
 
     new_assets = get_assets(dst_dir)
 
+    print("New assets :")
+    for element in new_assets:
+        print(element)
+
 
 if __name__ == "__main__":
     main()

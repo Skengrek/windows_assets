@@ -2,7 +2,7 @@
 
 """
 
-from os import listdir, path, sep, mkdir
+from os import listdir, path, sep, mkdir, remove
 from os.path import isfile, join, getsize, isdir
 from shutil import copy2, move
 
@@ -11,13 +11,14 @@ from PIL import Image
 
 def get_assets(dst_dir):
     """Get windows assets and copy them to a specific folder"""
-    path_assets = path.expandvars(r'%LOCALAPPDATA%\Packages\Microsoft.Windows.ContentDeliveryManager_cw5n1h2txyewy\LocalState\Assets')
+    path_assets = path.expandvars(
+        r'%LOCALAPPDATA%\Packages\Microsoft.Windows.ContentDeliveryManager_cw5n1h2txyewy\LocalState\Assets')
 
     # ? get all files from the assets folder
     tmp_assets = [f
                   for f in listdir(path_assets)
                   if isfile(join(path_assets, f))
-                 ]
+                  ]
 
     new_assets = []
 
@@ -116,26 +117,27 @@ def sort_assets(path_dir='TEMP'):
         path_im = join(path_dir, file)
 
         # ? get the image size
-        im = Image.open(path_im)
-        width, height = im.size
-        im.close()
+        try:
+            im = Image.open(path_im)
+            width, height = im.size
+            im.close()
 
-        # ? Sort all image by their size
-        if width == 1920:
-            dst = path_dir + sep + 'wallpaper' + sep + file
-            move(path_im, join(path_im, dst))
+            # ? Sort all image by their size
+            if width == 1920:
+                dst = path_dir + sep + 'wallpaper' + sep + file
+                move(path_im, join(path_im, dst))
 
-        elif width == 1080:
-            dst = path_dir + sep + 'wallpaper_vert' + sep + file
-            move(path_im, join(path_im, dst))
+            elif width == 1080:
+                dst = path_dir + sep + 'wallpaper_vert' + sep + file
+                move(path_im, join(path_im, dst))
 
-        elif width == height:
-            dst = path_dir + sep + 'logo' + sep + file
-            move(path_im, join(path_im, dst))
+            elif width == height:
+                dst = path_dir + sep + 'logo' + sep + file
+                move(path_im, join(path_im, dst))
 
-        else:
-            dst = path_dir + sep + 'others' + sep + file
-            move(path_im, join(path_im, dst))
+            else:
+                dst = path_dir + sep + 'others' + sep + file
+                move(path_im, join(path_im, dst))
 
-
-
+        except IOError:
+            remove(path_im)
